@@ -1,10 +1,11 @@
 const express = require('express')
 const morgan = require('morgan')
-// const bodyParser = require('body-parser')s
+const bodyParser = require('body-parser')
 const cors = require('cors')
 const env = require('dotenv').config()
 const mongoose = require('mongoose')
 const users = require('./routes/user.routes')
+const expenses = require('./routes/expense.routes')
 
 /**
  * -----
@@ -15,7 +16,7 @@ const users = require('./routes/user.routes')
  */
 const app = express()
 app.use(express.urlencoded({ extended: true }))
-app.use(express.json())
+//app.use(express.json())
 app.use(cors())
 
 mongoose
@@ -40,7 +41,12 @@ app.get('/', (req, res) => {
   })
 })
 
+/** ### External routes
+ * @description This portion provides all routes available
+ */
+  app.use(bodyParser.json())
 app.use('/api', users)
+app.use('/api', expenses)
 
 const PORT = process.env.PORT || 5000
 

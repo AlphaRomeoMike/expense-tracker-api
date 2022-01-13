@@ -1,24 +1,30 @@
 const Expense = require('../models/Expense.model')
 const schema = require('../schema/expense.schema')
+const jwt = require('jsonwebtoken')
 
-exports.create = async (req, res, next) => {
+exports.create = async (req, res) => {
   let data = req.body
 
+  //console.log(req.get('Authorization'));
   const validate = schema.validate(data)
 
-  if (!validate) {
+  if (validate) {
     let exp = new Expense()
+
+    let token = req.headers.authorization.split(' ')[1]
+    let decoded = jwt.decode(token)
 
     exp.name = data.name
     exp.description = data.description
     exp.amount = data.amount
-    exp.created_by = data.created_by
+    exp.created_by = decoded?.user
     exp.created_at = data.created_at
 
     await exp
       .save()
       .then((result) => {
-        return res.status(201).json({
+
+        res.status(201).send({
           message: 'Expense added succesfully',
           success: true,
           data: result,
@@ -31,9 +37,11 @@ exports.create = async (req, res, next) => {
           message: 'Something went wrong',
         })
       })
-  } else {
-    res.status(400).json({
-      error: validate.error.details,
+  }
+
+  if (validate.error != '') {
+    return res.status(400).json({
+      error: validate.error,
       success: false,
       message: 'Please try again',
     })
