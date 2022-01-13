@@ -1,0 +1,18 @@
+{
+	"Require for Node": {
+		"prefix": "req",
+		"body": [
+		  "const ${1:varname} = require(${2:express})"
+		],
+		"description": "Require for Node"
+	 },
+	 "Arrow Function": {
+		"prefix": "anonfn",
+		"body": [
+		  "const ${1:variable} = (req, res, next) => {",
+		  "  ${2:code}",
+		  "}"
+		],
+		"description": "Arrow Function"
+	 }
+}
