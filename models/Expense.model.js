@@ -1,4 +1,5 @@
 const mongoose = require('mongoose')
+const moment = require('moment')
 
 const ExpenseSchema = new mongoose.Schema({
    name: {
@@ -9,6 +10,14 @@ const ExpenseSchema = new mongoose.Schema({
    },
    amount: {
       type: Number
+   },
+   month: {
+      type: String,
+      default: moment().format('MMMM')
+   },
+   year: {
+      type: Date,
+      default: moment().format('Y')
    },
    created_by: {
       type: mongoose.Schema.Types.ObjectId,
