@@ -1,10 +1,11 @@
 const express = require('express')
 const morgan = require('morgan')
-// const bodyParser = require('body-parser')s
+const bodyParser = require('body-parser')
 const cors = require('cors')
 const env = require('dotenv').config()
 const mongoose = require('mongoose')
 const users = require('./routes/user.routes')
+const expenses = require('./routes/expense.routes')
 
 /**
  * -----
@@ -15,7 +16,7 @@ const users = require('./routes/user.routes')
  */
 const app = express()
 app.use(express.urlencoded({ extended: true }))
-app.use(express.json())
+//app.use(express.json())
 app.use(cors())
 
 mongoose
@@ -34,21 +35,27 @@ app.get('/', (req, res) => {
     status: 200,
     message: 'Welcome to Expense app',
     app: {
-       health: 100,
-       status: 'Running'
+      health: 100,
+      status: 'Running'
     }
   })
 })
 
-app.use('/api', users)
+/** ### External routes
+ * @description This portion provides all routes available
+ */
+app.use(bodyParser.json())
 
 const PORT = process.env.PORT || 5000
 
-if (process.env.ENV === 'local') {
+if (process.env.ENV === 'local' || process.env.ENV === 'dev') {
   console.log(`Environment is: ${process.env.ENV}`)
   const morgan = require('morgan')
   app.use(morgan('combined'))
 }
+
+app.use('/api', users)
+app.use('/api', expenses)
 
 app.listen(PORT, () => {
   console.log(`Server started on: http://locahost:${PORT}/`)
